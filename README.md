@@ -195,10 +195,3 @@ If you’d like to contribute, please fork the repo and submit a PR.
 This project is licensed under the **MIT License** — feel free to use and adapt it.
 
 ---
-
-```
-
----
-
-Would you like me to add a version **with GitHub badges** (Expo SDK version, Firebase, License, and Platform) at the top for a more professional repo appearance?
-```
