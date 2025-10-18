@@ -1,25 +1,30 @@
 import { initializeApp } from "firebase/app";
-import { initializeAuth } from "firebase/auth";
-import { getReactNativePersistence } from "firebase/auth/react-native";
+import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getFirestore } from 'firebase/firestore';
-import Constants from 'expo-constants';
+import { getFirestore } from "firebase/firestore";
+import Constants from "expo-constants";
 
-const env = process.env as any;
-const extra = (Constants.manifest && (Constants.manifest as any).extra) || {};
+
+const extra = Constants.expoConfig?.extra || {};
 
 const firebaseConfig = {
-  apiKey: env.EXPO_FIREBASE_API_KEY || extra.FIREBASE_API_KEY,
-  authDomain: env.EXPO_FIREBASE_AUTH_DOMAIN || extra.FIREBASE_AUTH_DOMAIN,
-  projectId: env.EXPO_FIREBASE_PROJECT_ID || extra.FIREBASE_PROJECT_ID,
-  storageBucket: env.EXPO_FIREBASE_STORAGE_BUCKET || extra.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: env.EXPO_FIREBASE_MESSAGING_SENDER_ID || extra.FIREBASE_MESSAGING_SENDER_ID,
-  appId: env.EXPO_FIREBASE_APP_ID || extra.FIREBASE_APP_ID,
-  measurementId: env.EXPO_FIREBASE_MEASUREMENT_ID || extra.FIREBASE_MEASUREMENT_ID,
+  apiKey: extra.FIREBASE_API_KEY,
+  authDomain: extra.FIREBASE_AUTH_DOMAIN,
+  projectId: extra.FIREBASE_PROJECT_ID,
+  storageBucket: extra.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
+  appId: extra.FIREBASE_APP_ID,
+  measurementId: extra.FIREBASE_MEASUREMENT_ID,
 };
 
+// Debug: show that a key is present (not the value)
+if (!firebaseConfig.apiKey) {
+  console.warn("Firebase API key is missing. Ensure .env and app.config.js are configured.");
+} else {
+  console.log("Firebase API key found (length):", String(firebaseConfig.apiKey).length);
+}
+
 export const app = initializeApp(firebaseConfig);
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+
+export const auth = getAuth(app);
 export const db = getFirestore(app);
