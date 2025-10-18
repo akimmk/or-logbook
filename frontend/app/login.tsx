@@ -2,7 +2,8 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Card, Text, TextInput, Title, useTheme } from 'react-native-paper';
+import { Button, Card, Text, TextInput, Title, useTheme, ActivityIndicator } from 'react-native-paper';
+import { signIn, fetchUserByEmail } from '../firebase';
 
 interface AuthForm {
   fullname?: string;
@@ -21,11 +22,24 @@ export default function LoginScreen() {
   formState: { errors },
   } = useForm<AuthForm>({ mode: 'onChange', defaultValues: { fullname: '', email: '', password: '' } });
 
-  // For now, accept any string values and don't save data. Navigate to the selected role dashboard.
-  const onSubmit = (_data: AuthForm) => {
-    // navigate to role dashboard via explicit mapping (satisfy typed router paths)
-    const path = role === 'admin' ? '/dashboard/admin' : role === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
-    router.push(path as any);
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const onSubmit = async (data: AuthForm) => {
+    setLoading(true);
+    setAuthError(null);
+    try {
+  await signIn(data.email, data.password);
+      // Try to fetch role from users collection
+      const userDoc = await fetchUserByEmail(data.email);
+      const userRole = userDoc?.role || role;
+      const path = userRole === 'admin' ? '/dashboard/admin' : userRole === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
+      router.replace(path as any);
+    } catch (e: any) {
+      setAuthError(e?.message || 'Sign in failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -183,9 +197,12 @@ export default function LoginScreen() {
               onPress={handleSubmit(onSubmit)}
               style={[styles.actionButton, { backgroundColor: theme.colors.primary }]}
               accessibilityLabel="auth-submit"
+              disabled={loading}
             >
-              {isSignup ? 'Sign Up' : 'Sign In'}
+              {loading ? 'Signing in...' : isSignup ? 'Sign Up' : 'Sign In'}
             </Button>
+            {loading && <ActivityIndicator style={{ marginTop: 8 }} />}
+            {authError && <Text style={{ color: '#B00020', marginTop: 8 }}>{authError}</Text>}
             <Button
               mode="text"
               onPress={() => setIsSignup(!isSignup)}
