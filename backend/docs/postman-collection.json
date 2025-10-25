@@ -1,0 +1,514 @@
+{
+  "info": {
+    "name": "OR Logbook API",
+    "description": "Complete API collection for OR Logbook backend testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{firebase_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5001/or-logbook/us-central1/api",
+      "type": "string"
+    },
+    {
+      "key": "firebase_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"Password123!\",\n  \"role\": \"nurse\",\n  \"additionalData\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"department\": \"Operating Room\",\n    \"licenseNumber\": \"RN-001236\",\n    \"contact\": \"+1234567897\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User Role (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"surgeon\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/:userId/role",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", ":userId", "role"]
+            }
+          }
+        },
+        {
+          "name": "Delete User (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/:userId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", ":userId"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "Create Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Johnson\",\n  \"dateOfBirth\": \"1985-03-15T00:00:00.000Z\",\n  \"medicalRecordNumber\": \"MRN-004\",\n  \"contact\": \"+1234567898\",\n  \"admissionDate\": \"2024-01-18T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients"]
+            }
+          }
+        },
+        {
+          "name": "Get All Patients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/:patientId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients", ":patientId"]
+            }
+          }
+        },
+        {
+          "name": "Update Patient",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice Updated\",\n  \"lastName\": \"Johnson\",\n  \"contact\": \"+1234567899\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients/:patientId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients", ":patientId"]
+            }
+          }
+        },
+        {
+          "name": "Delete Patient",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/:patientId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients", ":patientId"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Surgeons",
+      "item": [
+        {
+          "name": "Create Surgeon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Dr. Sarah\",\n  \"lastName\": \"Miller\",\n  \"specialization\": \"Neurosurgery\",\n  \"licenseNumber\": \"MD-001236\",\n  \"contact\": \"+1234567900\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/surgeons",
+              "host": ["{{base_url}}"],
+              "path": ["api", "surgeons"]
+            }
+          }
+        },
+        {
+          "name": "Get All Surgeons",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/surgeons",
+              "host": ["{{base_url}}"],
+              "path": ["api", "surgeons"]
+            }
+          }
+        },
+        {
+          "name": "Get Surgeon by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/surgeons/:surgeonId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "surgeons", ":surgeonId"]
+            }
+          }
+        },
+        {
+          "name": "Update Surgeon",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialization\": \"Pediatric Surgery\",\n  \"contact\": \"+1234567901\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/surgeons/:surgeonId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "surgeons", ":surgeonId"]
+            }
+          }
+        },
+        {
+          "name": "Delete Surgeon",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/surgeons/:surgeonId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "surgeons", ":surgeonId"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Operations",
+      "item": [
+        {
+          "name": "Create Operation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"patient_id_here\",\n  \"surgeonId\": \"surgeon_id_here\",\n  \"operationType\": \"Appendectomy\",\n  \"operationDate\": \"2024-01-22T00:00:00.000Z\",\n  \"scheduledStartTime\": \"2024-01-22T14:00:00.000Z\",\n  \"operatingRoom\": \"OR-3\",\n  \"anesthesiaType\": \"General\",\n  \"anesthesiologist\": \"Dr. Anesthesia Wilson\",\n  \"assistantSurgeons\": [\"Dr. Assistant Smith\"],\n  \"status\": \"scheduled\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/operations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "operations"]
+            }
+          }
+        },
+        {
+          "name": "Get All Operations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/operations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "operations"]
+            }
+          }
+        },
+        {
+          "name": "Get Operations by Surgeon",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/operations?surgeonId=surgeon_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["api", "operations"],
+              "query": [
+                {
+                  "key": "surgeonId",
+                  "value": "surgeon_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Operations by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/operations?status=completed",
+              "host": ["{{base_url}}"],
+              "path": ["api", "operations"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "completed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Operation by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/operations/:operationId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "operations", ":operationId"]
+            }
+          }
+        },
+        {
+          "name": "Update Operation",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actualStartTime\": \"2024-01-22T14:15:00.000Z\",\n  \"actualEndTime\": \"2024-01-22T16:30:00.000Z\",\n  \"status\": \"completed\",\n  \"outcomes\": \"Successful\",\n  \"notes\": \"Procedure completed without complications\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/operations/:operationId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "operations", ":operationId"]
+            }
+          }
+        },
+        {
+          "name": "Delete Operation",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebase_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/operations/:operationId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "operations", ":operationId"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

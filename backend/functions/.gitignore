@@ -8,3 +8,8 @@ typings/
 # Node.js dependency directory
 node_modules/
 *.local
+.env
+.env.*local
+.env.example
+.serviceAccountKey.json
+backend\functions\src\config\serviceAccountKey.json
