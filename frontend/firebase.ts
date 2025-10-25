@@ -7,10 +7,18 @@ export async function signIn(email: string, password: string) {
   return userCred.user;
 }
 
-export async function createUser(email: string, password: string, role: string) {
+export async function createUser(email: string, password: string, role: string, fullname?: string, title?: string) {
   const userCred = await createUserWithEmailAndPassword(auth, email, password);
   const uid = userCred.user.uid;
-  await setDoc(doc(db, 'users', uid), { email, role, status: 'active', createdAt: new Date().toISOString() });
+  const payload: Record<string, any> = {
+    email,
+    role,
+    status: 'active',
+    createdAt: new Date().toISOString(),
+  };
+  if (fullname) payload.fullname = fullname;
+  if (title) payload.title = title;
+  await setDoc(doc(db, 'users', uid), payload);
   return { uid };
 }
 
