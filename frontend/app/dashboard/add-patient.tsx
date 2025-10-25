@@ -80,22 +80,23 @@ export default function AddPatientScreen() {
           <View style={cs.section}>
             <Text style={cs.sectionTitle}>Patient Details</Text>
             <Text style={cs.label}>Full Name *</Text>
-            <TextInput placeholder="e.g. John Doe" value={fullName} onChangeText={setFullName} style={cs.input} />
+
+            <TextInput placeholder="Full name" value={fullName} onChangeText={setFullName} style={cs.input} />
 
             <Text style={cs.label}>Patient ID *</Text>
-            <TextInput placeholder="e.g. P-12345" value={patientId} onChangeText={setPatientId} style={cs.input} />
+            <TextInput placeholder="Patient ID" value={patientId} onChangeText={setPatientId} style={cs.input} />
 
             <Text style={cs.label}>Age</Text>
-            <TextInput placeholder="e.g. 45" value={age} onChangeText={setAge} style={cs.input} keyboardType="numeric" />
+            <TextInput placeholder="Age" value={age} onChangeText={setAge} style={cs.input} keyboardType="numeric" />
 
             <Text style={cs.label}>Sex</Text>
-            <TextInput placeholder="e.g. Male" value={sex} onChangeText={setSex} style={cs.input} />
+            <TextInput placeholder="Sex" value={sex} onChangeText={setSex} style={cs.input} />
 
             <Text style={cs.label}>Bed Number</Text>
-            <TextInput placeholder="e.g. 101A" value={bed} onChangeText={setBed} style={cs.input} />
+            <TextInput placeholder="Bed number" value={bed} onChangeText={setBed} style={cs.input} />
 
             <Text style={cs.label}>Ward</Text>
-            <TextInput placeholder="e.g. General Surgery" value={ward} onChangeText={setWard} style={cs.input} />
+            <TextInput placeholder="Ward" value={ward} onChangeText={setWard} style={cs.input} />
           </View>
 
           <View style={cs.section}>
@@ -210,46 +211,46 @@ export default function AddPatientScreen() {
             )}
 
             <Text style={cs.label}>Anesthesia Type *</Text>
-            <TextInput placeholder="e.g. General" value={anesthesia} onChangeText={setAnesthesia} style={cs.input} />
+            <TextInput placeholder="Anesthesia type" value={anesthesia} onChangeText={setAnesthesia} style={cs.input} />
 
             <Text style={cs.label}>Procedure Performed *</Text>
-            <TextInput placeholder="e.g. Appendectomy" value={procedure} onChangeText={setProcedure} style={cs.input} />
+            <TextInput placeholder="Procedure performed" value={procedure} onChangeText={setProcedure} style={cs.input} />
 
             <Text style={cs.label}>Pre-Op Diagnosis *</Text>
-            <TextInput placeholder="e.g. Acute appendicitis" value={preOp} onChangeText={setPreOp} style={cs.input} />
+            <TextInput placeholder="Pre-op diagnosis" value={preOp} onChangeText={setPreOp} style={cs.input} />
 
             <Text style={cs.label}>Post-Op Diagnosis</Text>
-            <TextInput placeholder="e.g. N/A" value={postOp} onChangeText={setPostOp} style={cs.input} />
+            <TextInput placeholder="Post-op diagnosis" value={postOp} onChangeText={setPostOp} style={cs.input} />
           </View>
 
           <View style={cs.section}>
             <Text style={cs.sectionTitle}>Surgical Team</Text>
             <Text style={cs.label}>Surgeon Name *</Text>
-            <TextInput placeholder="e.g. Dr. Tesfaye" value={surgeon} onChangeText={setSurgeon} style={cs.input} />
+            <TextInput placeholder="Surgeon name" value={surgeon} onChangeText={setSurgeon} style={cs.input} />
 
             <Text style={cs.label}>Assistants (comma-separated)</Text>
-            <TextInput placeholder="e.g. Nurse A, Nurse B" value={assistants} onChangeText={setAssistants} style={cs.input} />
+            <TextInput placeholder="Assistants (comma-separated)" value={assistants} onChangeText={setAssistants} style={cs.input} />
 
             <Text style={cs.label}>Anesthetist</Text>
-            <TextInput placeholder="e.g. Dr. Alem" value={anesthetist} onChangeText={setAnesthetist} style={cs.input} />
+            <TextInput placeholder="Anesthetist" value={anesthetist} onChangeText={setAnesthetist} style={cs.input} />
 
             <Text style={cs.label}>Scrub Nurse</Text>
-            <TextInput placeholder="e.g. Nurse Selam" value={scrub} onChangeText={setScrub} style={cs.input} />
+            <TextInput placeholder="Scrub nurse" value={scrub} onChangeText={setScrub} style={cs.input} />
 
             <Text style={cs.label}>Circulating Nurse</Text>
-            <TextInput placeholder="e.g. Nurse Hana" value={circulating} onChangeText={setCirculating} style={cs.input} />
+            <TextInput placeholder="Circulating nurse" value={circulating} onChangeText={setCirculating} style={cs.input} />
           </View>
 
           <View style={cs.section}>
             <Text style={cs.sectionTitle}>Outcome</Text>
             <Text style={cs.label}>Outcome *</Text>
-            <TextInput placeholder="e.g. Successful" value={outcome} onChangeText={setOutcome} style={cs.input} />
+            <TextInput placeholder="Outcome" value={outcome} onChangeText={setOutcome} style={cs.input} />
 
             <Text style={cs.label}>Complications</Text>
-            <TextInput placeholder="e.g. None" value={complications} onChangeText={setComplications} style={[cs.input, { height: 90, textAlignVertical: 'top' }]} multiline />
+            <TextInput placeholder="Complications" value={complications} onChangeText={setComplications} style={[cs.input, { height: 90, textAlignVertical: 'top' }]} multiline />
 
             <Text style={cs.label}>Remarks</Text>
-            <TextInput placeholder="e.g. Patient stable" value={remarks} onChangeText={setRemarks} style={[cs.input, { height: 90, textAlignVertical: 'top' }]} multiline />
+            <TextInput placeholder="Remarks" value={remarks} onChangeText={setRemarks} style={[cs.input, { height: 90, textAlignVertical: 'top' }]} multiline />
           </View>
 
           <View style={cs.actionsRow}>

@@ -3,11 +3,8 @@ import { SafeAreaView, View, FlatList, TextInput } from 'react-native';
 import { Text, Title } from 'react-native-paper';
 import cs from './commonStyles';
 
-const DUMMY = [
-  { id: '1', patient: 'John Doe', date: '2025-10-10', outcome: 'Successful' },
-  { id: '2', patient: 'Jane Smith', date: '2025-09-22', outcome: 'Pending' },
-  { id: '3', patient: 'Abebe Kidane', date: '2025-08-12', outcome: 'Successful' },
-];
+// Data should come from Firestore. Removed hardcoded sample data.
+const DUMMY: { id: string; patient: string; date: string; outcome: string }[] = [];
 
 export default function CompletedSurgeriesScreen() {
   const [query, setQuery] = useState('');
@@ -30,18 +27,24 @@ export default function CompletedSurgeriesScreen() {
             />
           </View>
 
-          <FlatList
-            data={filtered}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={[cs.section, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
-                <View>
-                  <Text style={{ fontWeight: '600' }}>{item.patient}</Text>
-                  <Text style={{ color: '#666', marginTop: 4 }}>{item.date} • {item.outcome}</Text>
+          {filtered.length === 0 ? (
+            <View style={[cs.section, { alignItems: 'center' }]}> 
+              <Text style={{ color: '#666' }}>No completed surgeries found.</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={filtered}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <View style={[cs.section, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+                  <View>
+                    <Text style={{ fontWeight: '600' }}>{item.patient}</Text>
+                    <Text style={{ color: '#666', marginTop: 4 }}>{item.date} • {item.outcome}</Text>
+                  </View>
                 </View>
-              </View>
-            )}
-          />
+              )}
+            />
+          )}
         </View>
       </View>
     </SafeAreaView>

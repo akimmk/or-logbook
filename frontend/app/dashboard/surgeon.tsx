@@ -14,16 +14,15 @@ export default function SurgeonDashboard() {
       </View>
 
       <Surface style={styles.kpiRow}>
-        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Today</Text><Text style={styles.kpiValue}>2 ops</Text></View>
-        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Upcoming</Text><Text style={styles.kpiValue}>3 ops</Text></View>
-        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Notes</Text><Text style={styles.kpiValue}>14</Text></View>
+        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Today</Text><Text style={styles.kpiValue}>—</Text></View>
+        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Upcoming</Text><Text style={styles.kpiValue}>—</Text></View>
+        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Notes</Text><Text style={styles.kpiValue}>—</Text></View>
       </Surface>
 
       <Card style={styles.card}>
         <Card.Title title="Today's Operations" />
         <Card.Content>
-          <Text style={styles.opItem}>09:00 — Appendectomy — Room 2</Text>
-          <Text style={styles.opItem}>11:30 — Hernia Repair — Room 1</Text>
+          <Text style={styles.opItem}>No scheduled operations</Text>
         </Card.Content>
       </Card>
 

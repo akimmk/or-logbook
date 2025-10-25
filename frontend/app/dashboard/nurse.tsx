@@ -8,7 +8,6 @@ export default function NurseDashboardScreen() {
   const router = useRouter();
 
   function handleSignOut() {
-    // placeholder sign-out
     console.log('handleSignOut pressed');
     router.push('/login');
   }
@@ -20,7 +19,7 @@ export default function NurseDashboardScreen() {
           <View style={cs.headerRow}>
             <View style={cs.headerLeft}>
               <Title style={cs.title}>Nurse Dashboard</Title>
-              <Text style={cs.subtitle}>Welcome, Nurse Abebe</Text>
+              <Text style={cs.subtitle}>Welcome</Text>
             </View>
 
             <View style={cs.headerRight}>

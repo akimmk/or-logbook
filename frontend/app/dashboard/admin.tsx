@@ -24,19 +24,19 @@ export default function AdminDashboard() {
         <Card style={[styles.metricCard, { borderLeftColor: '#4B5563' }]}> 
           <Card.Content>
             <Text style={styles.metricLabel}>Users</Text>
-            <Text style={styles.metricValue}>1,248</Text>
+            <Text style={styles.metricValue}>—</Text>
           </Card.Content>
         </Card>
         <Card style={[styles.metricCard, { borderLeftColor: '#059669' }]}> 
           <Card.Content>
             <Text style={styles.metricLabel}>Operations</Text>
-            <Text style={styles.metricValue}>5,322</Text>
+            <Text style={styles.metricValue}>—</Text>
           </Card.Content>
         </Card>
         <Card style={[styles.metricCard, { borderLeftColor: '#2563EB' }]}> 
           <Card.Content>
             <Text style={styles.metricLabel}>Equipment</Text>
-            <Text style={styles.metricValue}>76 tracked</Text>
+            <Text style={styles.metricValue}>—</Text>
           </Card.Content>
         </Card>
       </View>
