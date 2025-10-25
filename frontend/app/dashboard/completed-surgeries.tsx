@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, StyleSheet, FlatList, TextInput } from 'react-native';
+import { SafeAreaView, View, FlatList, TextInput } from 'react-native';
 import { Text, Title } from 'react-native-paper';
+import cs from './commonStyles';
 
 const DUMMY = [
   { id: '1', patient: 'John Doe', date: '2025-10-10', outcome: 'Successful' },
@@ -14,40 +15,37 @@ export default function CompletedSurgeriesScreen() {
   const filtered = DUMMY.filter((d) => d.patient.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <Title style={styles.title}>Completed Surgeries</Title>
-      <Text style={styles.subtitle}>View and search past operations</Text>
+    <SafeAreaView style={cs.safe}>
+      <View style={cs.pageContainer}>
+        <View style={cs.content}>
+          <Title style={cs.title}>Completed Surgeries</Title>
+          <Text style={cs.subtitle}>View and search past operations</Text>
 
-      <View style={styles.searchWrap}>
-        <TextInput
-          placeholder="Search patient"
-          value={query}
-          onChangeText={setQuery}
-          style={styles.search}
-        />
-      </View>
-
-      <FlatList
-        data={filtered}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.patient}>{item.patient}</Text>
-            <Text style={styles.meta}>{item.date} • {item.outcome}</Text>
+          <View style={{ width: '100%', marginBottom: 12 }}>
+            <TextInput
+              placeholder="Search patient"
+              value={query}
+              onChangeText={setQuery}
+              style={cs.input}
+            />
           </View>
-        )}
-      />
+
+          <FlatList
+            data={filtered}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={[cs.section, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+                <View>
+                  <Text style={{ fontWeight: '600' }}>{item.patient}</Text>
+                  <Text style={{ color: '#666', marginTop: 4 }}>{item.date} • {item.outcome}</Text>
+                </View>
+              </View>
+            )}
+          />
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { marginBottom: 4 },
-  subtitle: { marginBottom: 12, color: '#666' },
-  searchWrap: { marginBottom: 12 },
-  search: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 8 },
-  row: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-  patient: { fontWeight: '600' },
-  meta: { color: '#666', marginTop: 4 },
-});
+// styling moved to commonStyles
