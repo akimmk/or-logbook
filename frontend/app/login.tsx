@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Text, TextInput, Title, useTheme, ActivityIndicator } from 'react-native-paper';
-import { signIn, fetchUserByEmail, createUser } from '../firebase';
+import { signIn, signUp, fetchUserByUID } from '../firebase';
 
 interface AuthForm {
   fullname?: string;
@@ -32,18 +32,24 @@ export default function LoginScreen() {
     setAuthError(null);
     try {
       if (isSignup) {
-        // Create user and write profile fields (fullname, title, role)
-        await createUser(data.email, data.password, role, data.fullname, data.title);
-        // After signup, route to the proper dashboard
-        const path = role === 'admin' ? '/dashboard/admin' : role === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
+        // Sign up (client-side MVP) and create user doc
+        const names = (data.fullname || '').trim().split(/\s+/);
+        const firstName = names.shift() || '';
+        const lastName = names.join(' ') || '';
+
+        const created = await signUp(data.email, data.password, role, { fullname: data.fullname, title: data.title, firstName, lastName });
+
+        // Fetch created user doc by UID to get authoritative role
+        const userDoc = await fetchUserByUID(created.uid);
+        const userRole = userDoc?.role || role;
+        const path = userRole === 'admin' ? '/dashboard/admin' : userRole === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
         router.replace(path as any);
         return;
       }
 
       // Sign in flow: email + password only
-      await signIn(data.email, data.password);
-      // Try to fetch role from users collection
-      const userDoc = await fetchUserByEmail(data.email);
+      const signed = await signIn(data.email, data.password);
+      const userDoc = await fetchUserByUID(signed.uid);
       const userRole = userDoc?.role || role;
       const path = userRole === 'admin' ? '/dashboard/admin' : userRole === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
       router.replace(path as any);

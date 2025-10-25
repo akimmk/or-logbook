@@ -17,14 +17,18 @@ const firebaseConfig = {
   measurementId: extra.FIREBASE_MEASUREMENT_ID,
 };
 
-// Debug: show that a key is present (not the value)
+// Debug: show that a key is present (not the value). Throw if missing to fail fast.
 if (!firebaseConfig.apiKey) {
-  console.warn("Firebase API key is missing. Ensure .env and app.config.js are configured.");
+  const msg = 'Firebase API key is missing. Ensure .env and app.config.js are configured.';
+  console.error(msg);
+  throw new Error(msg);
 } else {
-  console.log("Firebase API key found (length):", String(firebaseConfig.apiKey).length);
+  console.log('Firebase API key found (length):', String(firebaseConfig.apiKey).length);
 }
 
 export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+console.log('Firebase init OK');
