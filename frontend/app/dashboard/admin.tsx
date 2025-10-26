@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Avatar, Button, Card, Text, Title, useTheme } from 'react-native-paper';
 
@@ -8,7 +9,8 @@ export default function AdminDashboard() {
   const theme = useTheme();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ProtectedRoute requiredRole="admin">
+      <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Avatar.Icon size={56} icon="shield-account" style={{ backgroundColor: theme.colors.primary }} />
@@ -57,8 +59,9 @@ export default function AdminDashboard() {
         </Card.Content>
       </Card>
 
-      <Button mode="contained" onPress={() => router.push('/login')} style={styles.btn}>Open User Management</Button>
-    </ScrollView>
+        <Button mode="contained" onPress={() => router.push('/login')} style={styles.btn}>Open User Management</Button>
+      </ScrollView>
+    </ProtectedRoute>
   );
 }
 

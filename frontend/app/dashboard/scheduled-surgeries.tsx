@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { SafeAreaView, View, StyleSheet, FlatList, TextInput, Alert } from 'react-native';
 import { Title, Text, Button } from 'react-native-paper';
 import { useRouter } from 'expo-router';
@@ -33,7 +34,8 @@ export default function ScheduledSurgeriesScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <ProtectedRoute requiredRole={["nurse", "surgeon"]}>
+      <SafeAreaView style={styles.safe}>
       <Title>Scheduled Surgeries</Title>
       <Text style={styles.subtitle}>Edit or view upcoming operations</Text>
 
@@ -75,7 +77,8 @@ export default function ScheduledSurgeriesScreen() {
         <Button mode="contained" onPress={() => router.push('/dashboard/add-patient')}>Add Patient</Button>
         <Button mode="outlined" onPress={() => router.push('/dashboard/completed-surgeries')}>Completed</Button>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Surface, Text, Title } from 'react-native-paper';
 
@@ -7,7 +8,8 @@ export default function SurgeonDashboard() {
   const router = useRouter();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ProtectedRoute requiredRole="surgeon">
+      <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Title style={styles.title}>Surgeon Dashboard</Title>
         <Text style={styles.subtitle}>Focused on today&apos;s schedule and patient summaries</Text>
@@ -33,8 +35,9 @@ export default function SurgeonDashboard() {
         </Card.Content>
       </Card>
 
-      <Button mode="contained" onPress={() => router.push('/login')} style={styles.btn}>Sign out</Button>
-    </ScrollView>
+        <Button mode="contained" onPress={() => router.push('/login')} style={styles.btn}>Sign out</Button>
+      </ScrollView>
+    </ProtectedRoute>
   );
 }
 

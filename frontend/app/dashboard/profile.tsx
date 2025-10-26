@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, View, Image } from 'react-native';
+import ProtectedRoute from '../../components/ProtectedRoute';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { Title, Text, Button, ActivityIndicator } from 'react-native-paper';
 import { fetchUserByUID, getCurrentUser, onAuthStateChanged, UserProfile } from '../../firebase';
 import { useRouter } from 'expo-router';
@@ -50,23 +51,28 @@ export default function ProfileScreen() {
   }, []);
 
   if (loading) return (
-    <SafeAreaView style={styles.safe}>
-      <ActivityIndicator animating={true} />
-    </SafeAreaView>
+    <ProtectedRoute>
+      <SafeAreaView style={styles.safe}>
+        <ActivityIndicator animating={true} />
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 
   if (!profile) return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.card}>
-        <Text style={styles.label}>Not signed in</Text>
-        <Button mode="contained" onPress={() => router.replace('/login')}>Go to Login</Button>
-      </View>
-    </SafeAreaView>
+    <ProtectedRoute>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.card}>
+          <Text style={styles.label}>Not signed in</Text>
+          <Button mode="contained" onPress={() => router.replace('/login')}>Go to Login</Button>
+        </View>
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.header}>
+    <ProtectedRoute>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.header}>
         {/* Use Avatar.Text instead of external placeholder image */}
         <View style={[styles.avatar, { alignItems: 'center', justifyContent: 'center' }]}>
           <Title style={{ fontSize: 28 }}>{profile.fullname ? profile.fullname.charAt(0).toUpperCase() : 'U'}</Title>
@@ -103,8 +109,9 @@ export default function ProfileScreen() {
         )}
 
         <Button mode="contained" style={styles.editBtn} onPress={() => console.log('Edit profile')}>Edit Profile</Button>
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 }
 

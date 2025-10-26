@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { SafeAreaView, ScrollView, View, TextInput, Platform } from 'react-native';
 import cs from './commonStyles';
 import { Title, Text, Button } from 'react-native-paper';
@@ -72,9 +73,10 @@ export default function AddPatientScreen() {
   }
 
   return (
-    <SafeAreaView style={cs.safe}>
-      <ScrollView contentContainerStyle={cs.pageContainer}>
-        <View style={cs.content}>
+    <ProtectedRoute requiredRole={["nurse", "surgeon"]}>
+      <SafeAreaView style={cs.safe}>
+        <ScrollView contentContainerStyle={cs.pageContainer}>
+          <View style={cs.content}>
           <Title>New Surgery Record</Title>
 
           <View style={cs.section}>
@@ -257,8 +259,9 @@ export default function AddPatientScreen() {
             <Button mode="contained" onPress={handleSave} style={{ marginBottom: 8 }}>Save</Button>
             <Button mode="outlined" onPress={() => router.back()}>Cancel</Button>
           </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 }

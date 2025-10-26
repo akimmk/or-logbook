@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Button, Text, Title } from 'react-native-paper';
 import cs from './commonStyles';
@@ -13,9 +14,10 @@ export default function NurseDashboardScreen() {
   }
 
   return (
-    <SafeAreaView style={cs.safe}>
-      <View style={cs.pageContainer}>
-        <View style={cs.content}>
+    <ProtectedRoute requiredRole="nurse">
+      <SafeAreaView style={cs.safe}>
+        <View style={cs.pageContainer}>
+          <View style={cs.content}>
           <View style={cs.headerRow}>
             <View style={cs.headerLeft}>
               <Title style={cs.title}>Nurse Dashboard</Title>
@@ -57,9 +59,10 @@ export default function NurseDashboardScreen() {
               <Text style={cs.cardSubtitle}>Register a new patient for surgery</Text>
             </TouchableOpacity>
           </ScrollView>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 }
 

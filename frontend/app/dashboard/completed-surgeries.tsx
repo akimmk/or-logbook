@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { SafeAreaView, View, FlatList, TextInput } from 'react-native';
 import { Text, Title } from 'react-native-paper';
 import cs from './commonStyles';
@@ -12,9 +13,10 @@ export default function CompletedSurgeriesScreen() {
   const filtered = DUMMY.filter((d) => d.patient.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <SafeAreaView style={cs.safe}>
-      <View style={cs.pageContainer}>
-        <View style={cs.content}>
+    <ProtectedRoute requiredRole={["nurse", "surgeon"]}>
+      <SafeAreaView style={cs.safe}>
+        <View style={cs.pageContainer}>
+          <View style={cs.content}>
           <Title style={cs.title}>Completed Surgeries</Title>
           <Text style={cs.subtitle}>View and search past operations</Text>
 
@@ -45,9 +47,10 @@ export default function CompletedSurgeriesScreen() {
               )}
             />
           )}
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 }
 
