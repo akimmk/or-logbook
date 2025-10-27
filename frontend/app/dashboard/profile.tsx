@@ -1,37 +1,117 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, View, Image } from 'react-native';
-import { Title, Text, Button } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { Title, Text, Button, ActivityIndicator } from 'react-native-paper';
+import { fetchUserByUID, getCurrentUser, onAuthStateChanged, UserProfile } from '../../firebase';
+import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
+  const router = useRouter();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let unsub: (() => void) | null = null;
+
+    const loadForUid = async (uid?: string | null) => {
+      if (!uid) {
+        setLoading(false);
+        setProfile(null);
+        return;
+      }
+      try {
+        setLoading(true);
+        const doc = await fetchUserByUID(uid);
+        setProfile(doc);
+      } catch (err: any) {
+        console.error('Failed to load profile', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const current = getCurrentUser();
+    if (current && current.uid) {
+      loadForUid(current.uid);
+    } else {
+      // subscribe to auth changes and fetch when available
+      unsub = onAuthStateChanged((u) => {
+        if (!u) {
+          setProfile(null);
+          setLoading(false);
+          return;
+        }
+        loadForUid(u.uid);
+      });
+    }
+
+    return () => {
+      if (unsub) unsub();
+    };
+  }, []);
+
+  if (loading) return (
+    <ProtectedRoute>
+      <SafeAreaView style={styles.safe}>
+        <ActivityIndicator animating={true} />
+      </SafeAreaView>
+    </ProtectedRoute>
+  );
+
+  if (!profile) return (
+    <ProtectedRoute>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.card}>
+          <Text style={styles.label}>Not signed in</Text>
+          <Button mode="contained" onPress={() => router.replace('/login')}>Go to Login</Button>
+        </View>
+      </SafeAreaView>
+    </ProtectedRoute>
+  );
+
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.header}>
-        <Image
-          source={{ uri: 'https://placehold.co/96x96/png?text=N' }}
-          style={styles.avatar}
-        />
+    <ProtectedRoute>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.header}>
+        {/* Use Avatar.Text instead of external placeholder image */}
+        <View style={[styles.avatar, { alignItems: 'center', justifyContent: 'center' }]}>
+          <Title style={{ fontSize: 28 }}>{profile.fullname ? profile.fullname.charAt(0).toUpperCase() : 'U'}</Title>
+        </View>
         <View style={styles.userInfo}>
-          <Title style={styles.name}>Nurse Abebe</Title>
-          <Text style={styles.role}>Registered Nurse</Text>
+          <Title style={styles.name}>{profile.fullname || profile.email}</Title>
+          <Text style={styles.role}>{profile.title || profile.role}</Text>
         </View>
       </View>
 
       <View style={styles.card}>
         <Text style={styles.label}>Email</Text>
-        <Text>abebe@example.com</Text>
+        <Text>{profile.email}</Text>
 
-        <Text style={[styles.label, { marginTop: 12 }]}>Employee ID</Text>
-        <Text>RN-00123</Text>
+        {profile.uid && (
+          <>
+            <Text style={[styles.label, { marginTop: 12 }]}>User ID</Text>
+            <Text>{profile.uid}</Text>
+          </>
+        )}
 
-        <Text style={[styles.label, { marginTop: 12 }]}>Department</Text>
-        <Text>General Surgery Ward</Text>
+        {profile.role && (
+          <>
+            <Text style={[styles.label, { marginTop: 12 }]}>Role</Text>
+            <Text>{profile.role}</Text>
+          </>
+        )}
 
-        <Text style={[styles.label, { marginTop: 12 }]}>Phone</Text>
-        <Text>+251 9xx xxx xxx</Text>
+        {profile.createdAt && (
+          <>
+            <Text style={[styles.label, { marginTop: 12 }]}>Joined</Text>
+            <Text>{new Date(profile.createdAt).toLocaleString()}</Text>
+          </>
+        )}
 
         <Button mode="contained" style={styles.editBtn} onPress={() => console.log('Edit profile')}>Edit Profile</Button>
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+    </ProtectedRoute>
   );
 }
 

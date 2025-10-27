@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Text, TextInput, Title, useTheme, ActivityIndicator } from 'react-native-paper';
-import { signIn, fetchUserByEmail } from '../firebase';
+import { signIn, signUp, fetchUserByUID } from '../firebase';
 
 interface AuthForm {
   fullname?: string;
   email: string;
   password: string;
+  title?: string;
 }
 
 export default function LoginScreen() {
@@ -20,23 +21,40 @@ export default function LoginScreen() {
     control,
     handleSubmit,
   formState: { errors },
-  } = useForm<AuthForm>({ mode: 'onChange', defaultValues: { fullname: '', email: '', password: '' } });
+  } = useForm<AuthForm>({ mode: 'onChange', defaultValues: { fullname: '', title: '', email: '', password: '' } });
 
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+
 
   const onSubmit = async (data: AuthForm) => {
     setLoading(true);
     setAuthError(null);
     try {
-  await signIn(data.email, data.password);
-      // Try to fetch role from users collection
-      const userDoc = await fetchUserByEmail(data.email);
+      if (isSignup) {
+        // Sign up (client-side MVP) and create user doc
+        const names = (data.fullname || '').trim().split(/\s+/);
+        const firstName = names.shift() || '';
+        const lastName = names.join(' ') || '';
+
+        const created = await signUp(data.email, data.password, role, { fullname: data.fullname, title: data.title, firstName, lastName });
+
+        // Fetch created user doc by UID to get authoritative role
+        const userDoc = await fetchUserByUID(created.uid);
+        const userRole = userDoc?.role || role;
+        const path = userRole === 'admin' ? '/dashboard/admin' : userRole === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
+        router.replace(path as any);
+        return;
+      }
+
+      // Sign in flow: email + password only
+      const signed = await signIn(data.email, data.password);
+      const userDoc = await fetchUserByUID(signed.uid);
       const userRole = userDoc?.role || role;
       const path = userRole === 'admin' ? '/dashboard/admin' : userRole === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
       router.replace(path as any);
     } catch (e: any) {
-      setAuthError(e?.message || 'Sign in failed');
+      setAuthError(e?.message || (isSignup ? 'Sign up failed' : 'Sign in failed'));
     } finally {
       setLoading(false);
     }
@@ -75,67 +93,48 @@ export default function LoginScreen() {
                 />
                 {errors.fullname && <Text style={styles.errorText}>{errors.fullname.message}</Text>}
 
-                {/* When signing up we show Full Name first, then Email. For now we don't enforce validation rules. */}
-                {isSignup ? (
-                  <>
-                    <Controller
-                      control={control}
-                      name="fullname"
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                          label="Full Name"
-                          mode="outlined"
-                          dense
-                          placeholder="Enter your full name"
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                          value={value}
-                          style={styles.input}
-                        />
-                      )}
+                <Controller
+                  control={control}
+                  name="title"
+                  rules={{ required: 'Title is required' }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      label="Title"
+                      mode="outlined"
+                      dense
+                      placeholder="e.g. Pediatric Nurse, General Surgeon"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      style={styles.input}
                     />
+                  )}
+                />
+                {errors.title && <Text style={styles.errorText}>{errors.title.message}</Text>}
 
-                    <Controller
-                      control={control}
-                      name="email"
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                          label="Email"
-                          mode="outlined"
-                          dense
-                          placeholder="Enter your email"
-                          keyboardType="email-address"
-                          autoCapitalize="none"
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                          value={value}
-                          style={styles.input}
-                        />
-                      )}
+                <Controller
+                  control={control}
+                  name="email"
+                  rules={{
+                    required: 'Email is required',
+                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email' },
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      label="Email"
+                      mode="outlined"
+                      dense
+                      placeholder="Enter your email"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      style={styles.input}
                     />
-                  </>
-                ) : (
-                  <>
-                    <Controller
-                      control={control}
-                      name="email"
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                          label="Email"
-                          mode="outlined"
-                          dense
-                          placeholder="Enter your email"
-                          keyboardType="email-address"
-                          autoCapitalize="none"
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                          value={value}
-                          style={styles.input}
-                        />
-                      )}
-                    />
-                  </>
-                )}
+                  )}
+                />
+                {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
               </>
             ) : (
               <>
@@ -144,10 +143,7 @@ export default function LoginScreen() {
                   name="email"
                   rules={{
                     required: 'Email is required',
-                    pattern: {
-                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: 'Enter a valid email',
-                    },
+                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email' },
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
@@ -259,4 +255,6 @@ const styles = StyleSheet.create({
     color: '#B00020',
     marginBottom: 8,
   },
+  
 });
+

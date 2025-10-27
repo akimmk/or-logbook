@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Surface, Text, Title } from 'react-native-paper';
 
@@ -7,23 +8,23 @@ export default function SurgeonDashboard() {
   const router = useRouter();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ProtectedRoute requiredRole="surgeon">
+      <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Title style={styles.title}>Surgeon Dashboard</Title>
         <Text style={styles.subtitle}>Focused on today&apos;s schedule and patient summaries</Text>
       </View>
 
       <Surface style={styles.kpiRow}>
-        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Today</Text><Text style={styles.kpiValue}>2 ops</Text></View>
-        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Upcoming</Text><Text style={styles.kpiValue}>3 ops</Text></View>
-        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Notes</Text><Text style={styles.kpiValue}>14</Text></View>
+        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Today</Text><Text style={styles.kpiValue}>—</Text></View>
+        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Upcoming</Text><Text style={styles.kpiValue}>—</Text></View>
+        <View style={styles.kpiItem}><Text style={styles.kpiLabel}>Notes</Text><Text style={styles.kpiValue}>—</Text></View>
       </Surface>
 
       <Card style={styles.card}>
         <Card.Title title="Today's Operations" />
         <Card.Content>
-          <Text style={styles.opItem}>09:00 — Appendectomy — Room 2</Text>
-          <Text style={styles.opItem}>11:30 — Hernia Repair — Room 1</Text>
+          <Text style={styles.opItem}>No scheduled operations</Text>
         </Card.Content>
       </Card>
 
@@ -34,8 +35,9 @@ export default function SurgeonDashboard() {
         </Card.Content>
       </Card>
 
-      <Button mode="contained" onPress={() => router.push('/login')} style={styles.btn}>Sign out</Button>
-    </ScrollView>
+        <Button mode="contained" onPress={() => router.push('/login')} style={styles.btn}>Sign out</Button>
+      </ScrollView>
+    </ProtectedRoute>
   );
 }
 

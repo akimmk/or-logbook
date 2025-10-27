@@ -1,0 +1,32 @@
+// Example Firestore security rules (frontend/firestore.rules.example)
+// These are illustrative only. Adapt to your collections and field names.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users collection: users can read their own doc, admins can read all
+    match /users/{userId} {
+      allow create: if request.auth != null && request.resource.data.email == request.auth.token.email;
+      allow read: if request.auth != null && (request.auth.uid == userId || request.auth.token.role == 'admin');
+      // Prevent clients from changing role field - only allow update of non-role fields
+      allow update: if request.auth != null
+        && (request.auth.uid == userId || request.auth.token.role == 'admin')
+        && !(request.resource.data.keys().hasAny(['role']) && request.resource.data.role != resource.data.role);
+      allow delete: if request.auth != null && request.auth.token.role == 'admin';
+    }
+
+    // Example OR entries collection - only nurses can create operations, surgeons and admins can update
+    match /orEntries/{entryId} {
+      allow create: if request.auth != null && request.auth.token.role == 'nurse';
+      allow read: if request.auth != null;
+      allow update: if request.auth != null && (request.auth.token.role == 'surgeon' || request.auth.token.role == 'admin');
+      allow delete: if request.auth != null && request.auth.token.role == 'admin';
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
