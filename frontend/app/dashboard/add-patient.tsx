@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { SafeAreaView, ScrollView, View, TextInput, Platform } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import cs from './commonStyles';
 import { Title, Text, Button } from 'react-native-paper';
 import { useRouter } from 'expo-router';
@@ -92,7 +93,16 @@ export default function AddPatientScreen() {
             <TextInput placeholder="Age" value={age} onChangeText={setAge} style={cs.input} keyboardType="numeric" />
 
             <Text style={cs.label}>Sex</Text>
-            <TextInput placeholder="Sex" value={sex} onChangeText={setSex} style={cs.input} />
+            <View style={[cs.input, { paddingHorizontal: 0 }]}> 
+              <Picker
+                selectedValue={sex}
+                onValueChange={(v: string) => setSex(v)}
+                style={{ height: 44 }}
+              >
+                <Picker.Item label="Male" value="Male" />
+                <Picker.Item label="Female" value="Female" />
+              </Picker>
+            </View>
 
             <Text style={cs.label}>Bed Number</Text>
             <TextInput placeholder="Bed number" value={bed} onChangeText={setBed} style={cs.input} />
@@ -213,7 +223,18 @@ export default function AddPatientScreen() {
             )}
 
             <Text style={cs.label}>Anesthesia Type *</Text>
-            <TextInput placeholder="Anesthesia type" value={anesthesia} onChangeText={setAnesthesia} style={cs.input} />
+            <View style={[cs.input, { paddingHorizontal: 0 }]}> 
+              <Picker
+                selectedValue={anesthesia}
+                onValueChange={(v: string) => setAnesthesia(v)}
+                style={{ height: 44 }}
+              >
+                <Picker.Item label="General" value="General" />
+                <Picker.Item label="Regional" value="Regional" />
+                <Picker.Item label="Local" value="Local" />
+                <Picker.Item label="Sedation" value="Sedation" />
+              </Picker>
+            </View>
 
             <Text style={cs.label}>Procedure Performed *</Text>
             <TextInput placeholder="Procedure performed" value={procedure} onChangeText={setProcedure} style={cs.input} />
@@ -246,7 +267,17 @@ export default function AddPatientScreen() {
           <View style={cs.section}>
             <Text style={cs.sectionTitle}>Outcome</Text>
             <Text style={cs.label}>Outcome *</Text>
-            <TextInput placeholder="Outcome" value={outcome} onChangeText={setOutcome} style={cs.input} />
+            <View style={[cs.input, { paddingHorizontal: 0 }]}> 
+              <Picker
+                selectedValue={outcome}
+                onValueChange={(v: string) => setOutcome(v)}
+                style={{ height: 44 }}
+              >
+                <Picker.Item label="Successful" value="Successful" />
+                <Picker.Item label="Unsuccessful" value="Unsuccessful" />
+                <Picker.Item label="Pending" value="Pending" />
+              </Picker>
+            </View>
 
             <Text style={cs.label}>Complications</Text>
             <TextInput placeholder="Complications" value={complications} onChangeText={setComplications} style={[cs.input, { height: 90, textAlignVertical: 'top' }]} multiline />
@@ -255,9 +286,13 @@ export default function AddPatientScreen() {
             <TextInput placeholder="Remarks" value={remarks} onChangeText={setRemarks} style={[cs.input, { height: 90, textAlignVertical: 'top' }]} multiline />
           </View>
 
-          <View style={cs.actionsRow}>
-            <Button mode="contained" onPress={handleSave} style={{ marginBottom: 8 }}>Save</Button>
-            <Button mode="outlined" onPress={() => router.back()}>Cancel</Button>
+          <View style={[cs.actionsRow, { width: '80%', alignSelf: 'center' }]}> 
+            <View style={{ flex: 1, marginRight: 8 }}>
+              <Button mode="contained" onPress={handleSave} contentStyle={{ height: 44 }} style={{ width: '100%' }}>Save</Button>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button mode="outlined" onPress={() => router.back()} contentStyle={{ height: 44 }} style={{ width: '100%' }}>Cancel</Button>
+            </View>
           </View>
           </View>
         </ScrollView>
