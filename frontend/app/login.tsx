@@ -31,7 +31,7 @@ export default function LoginScreen() {
     setLoading(true);
     setAuthError(null);
     try {
-      if (isSignup) {
+  if (isSignup) {
         // Sign up (client-side MVP) and create user doc
         const names = (data.fullname || '').trim().split(/\s+/);
         const firstName = names.shift() || '';
@@ -50,9 +50,19 @@ export default function LoginScreen() {
       // Sign in flow: email + password only
       const signed = await signIn(data.email, data.password);
       const userDoc = await fetchUserByUID(signed.uid);
-      const userRole = userDoc?.role || role;
-      const path = userRole === 'admin' ? '/dashboard/admin' : userRole === 'surgeon' ? '/dashboard/surgeon' : '/dashboard/nurse';
-      router.replace(path as any);
+      const userRole = userDoc?.role;
+      // route only if a valid role is found; otherwise fallback to unauthorized
+      const pathMap: Record<string, string> = {
+        admin: '/dashboard/admin',
+        surgeon: '/dashboard/surgeon',
+        nurse: '/dashboard/nurse',
+      };
+      const path = userRole ? pathMap[userRole] : undefined;
+      if (path) {
+        router.replace(path as any);
+      } else {
+        router.replace('/unauthorized');
+      }
     } catch (e: any) {
       setAuthError(e?.message || (isSignup ? 'Sign up failed' : 'Sign in failed'));
     } finally {
@@ -182,11 +192,13 @@ export default function LoginScreen() {
               )}
             />
 
-            <View style={styles.roleRow}>
-              <Button mode={role === 'admin' ? 'contained' : 'outlined'} onPress={() => setRole('admin')} style={styles.roleButton}>Admin</Button>
-              <Button mode={role === 'surgeon' ? 'contained' : 'outlined'} onPress={() => setRole('surgeon')} style={styles.roleButton}>Surgeon</Button>
-              <Button mode={role === 'nurse' ? 'contained' : 'outlined'} onPress={() => setRole('nurse')} style={styles.roleButton}>Nurse</Button>
-            </View>
+            {isSignup && (
+              <View style={styles.roleRow}>
+                <Button mode={role === 'admin' ? 'contained' : 'outlined'} onPress={() => setRole('admin')} style={styles.roleButton}>Admin</Button>
+                <Button mode={role === 'surgeon' ? 'contained' : 'outlined'} onPress={() => setRole('surgeon')} style={styles.roleButton}>Surgeon</Button>
+                <Button mode={role === 'nurse' ? 'contained' : 'outlined'} onPress={() => setRole('nurse')} style={styles.roleButton}>Nurse</Button>
+              </View>
+            )}
 
             <Button
               mode="contained"
